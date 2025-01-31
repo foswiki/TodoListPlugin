@@ -1,0 +1,16 @@
+!noci
+data/System/TodoListForm.txt 0644
+data/System/TodoListPlugin.txt 0644
+lib/Foswiki/Plugins/TodoListPlugin/Core.pm 0644
+lib/Foswiki/Plugins/TodoListPlugin/DEPENDENCIES 0644
+lib/Foswiki/Plugins/TodoListPlugin/MANIFEST 0644
+lib/Foswiki/Plugins/TodoListPlugin.pm 0644
+lib/Foswiki/Plugins/TodoListPlugin/TodoList.pm 0644
+pub/System/TodoListPlugin/build/pkg.css 0644
+pub/System/TodoListPlugin/build/pkg.css.gz 0644
+pub/System/TodoListPlugin/build/pkg.js 0644
+pub/System/TodoListPlugin/build/pkg.js.gz 0644
+pub/System/TodoListPlugin/Makefile 0644
+pub/System/TodoListPlugin/src/TodoItem.js 0644
+pub/System/TodoListPlugin/src/todolist.css 0644
+pub/System/TodoListPlugin/src/TodoList.js 0644

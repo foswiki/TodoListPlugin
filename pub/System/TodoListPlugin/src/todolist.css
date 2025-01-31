@@ -1,0 +1,44 @@
+.todoList ul {
+  list-style:none;
+  margin-bottom:0;
+ }
+.todoList > ul {
+  padding-left:0;
+}
+.todoList li {
+  padding-left:2rem;
+  cursor:text;
+}
+.todoList li > i {
+  display:inline-block;
+  float:left;
+  width: 2rem;
+  text-align:center;
+  color:var(--color-text, #333);
+  margin:2px 0 2px -2rem;
+  font-size:105%;
+}
+.todoList .todoItem > i {
+  cursor:pointer;
+}
+.todoList li > span {
+  margin:2px 0;
+  display:inline-block;
+}
+.todoList li.value_1 i {
+  color:var(--color-green, #62c547);
+}
+.todoList li.value_2 i {
+  color:var(--color-alert, #f14141);
+}
+.todoList li .icon3,
+.todoList li .icon2,
+.todoList li .icon1 {
+  display:none;
+}
+.todoList li.todoAddItem .icon1,
+.todoList li.value_0 .icon1,
+.todoList li.value_1 .icon2,
+.todoList li.value_2 .icon3 {
+  display:inline-block;
+}

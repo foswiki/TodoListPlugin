@@ -1,0 +1,14 @@
+%META:TOPICINFO{author="micha" comment="reprev" date="1710835924" format="1.1" reprev="1" version="2"}%
+%META:TOPICPARENT{name="TodoListPlugin"}%
+---+!! %TOPIC%
+
+| *Name*  | *Type* | *Size* | *Values* | *Description* | *Attributes* | *Default* |
+| index | text | 5 |  |  |  |  |
+| text | text | 80 |  |  |  |  |
+| list | text | 20 |  |  |  |  |
+| value | radio | 5 | 0,1,2,3,4,5 |  |  | 0 |
+| createauthor | user | 30 |  |  | h |  |
+| createdate | datetime | 10 |  |  | h |  |
+| author | user | 30 |  |  | h |  |
+| date | datetime | 10  |  |  | h |  |
+

@@ -1,0 +1,134 @@
+%META:TOPICINFO{author="micha" comment="reprev" date="1710835924" format="1.1" reprev="1" version="2"}%
+---+!! %TOPIC%
+%FORMFIELD{"Description"}%
+
+%TOC%
+
+---++ Description
+
+This plugin implements a simple todo list editor stored in Foswiki meta data.
+
+---++ Syntax
+
+---+++ TODOLIST
+
+=%<nop>TODOLIST{&lt;params>..."}%=
+
+| *Parameter* | *Description* | *Default* |
+| "..." or list="..." | name of the list | default |
+| topic="..." | name of the topic to render the list for | current topic |
+| rev="..." | topic revision | top revision |
+| editmode="on,off,check,acl" | specifies the level of editing: %BR% \
+    "on" - fully editable (given user is allowed to change the topic), %BR% \
+    "off" - not editable, %BR% \
+    "check" - only allow ticking todo items, but not adding new items nor reordering them (given user has change rights on the topic)  \
+    "acl" - edit mode controlled by acl lists (see below) \
+  | off if topic cannot be changed, on otherwise |
+| ternary="on/off" | if enabled items can be toggled between three instead of two states | off |
+| icon="..." or icon1="..."| icon to be displayed on a todo item | fa-circle-o |
+| icon2="..." | icon for ticked off items | fa-check |
+| icon3="..." | icon displayed for the third value if ternary is enabled | fa-times |
+| size="..." | size of the input element to edit a todo item | 80 |
+
+If =editmode= is set to =acl= then the following access control lists will control the edit mode.
+
+   * ALLOWTOPICTODOLISTCHANGE: if user has change acces to the list, the todo list may be changed, i.e. new items may be added, deleted, checked and reordered: edit mode is =on=
+   * ALLOWTOPICTODOLISTCHECK: if is not allowed to change the list but is allowed to check items of a todo list, edit mode is =check=
+
+If none of the above lists apply, then the normal topic change rights control t he list's edit mode:
+
+   * ALLOWTOPICCHANGE: if user has change access to the topic, the edit mode is =on= 
+   * DENYTOPICCHANGE: if user does _not_ have change access to the topic, edit mode is =off=
+
+---+++ STARTTODOLIST, ENDTODOLIST
+
+An already existing bullet list can be converted into a =%TODOLIST= by surrounding it with =%STARTTODOLIST= ... =%ENDTODOLIST=
+The included bullets will be moved into the meta data of the current topic and replaced with a =%TODOLIST= macro.
+
+<verbatim>
+%STARTTODOLIST%
+   * first item
+   * second item
+   * third item        
+%ENDTODOLIST%
+</verbatim>
+
+When saving a topic above code will be converted into:
+
+<verbatim>%TODOLIST{"id1712338093"}%</verbatim>
+
+... with all three todo items converted to =%META:TODO= records.
+
+The id is a randomly generated number.
+
+---++ Examples
+
+default appearance:
+
+<verbatim>%TODOLIST%</verbatim>
+
+ternary check list:
+
+<verbatim>%TODOLIST{ternary="on"}%</verbatim>
+
+custom icons:
+
+<verbatim>
+%TODOLIST{icon1="fa-square-o" icon2="fa-check-square-o"}%
+</verbatim>
+
+<verbatim>
+%TODOLIST{icon1="fa-toggle-off" icon2="fa-toggle-on"}%
+</verbatim>
+
+custom icons on a non-default todo list:
+
+<verbatim>
+%TODOLIST{"bbq" icon1="fa-heart-o" icon2="fa-heart"}%
+</verbatim>
+
+---++ Querying todo items
+
+Using =%QUERY=:
+
+<verbatim>%QUERY{"todo"}%</verbatim>
+
+Using =%DBQUERY= of [[https://foswiki.org/Extensions/DBCachePlugin][DBCachePlugin]]:
+
+<verbatim>
+%DBQUERY{
+   topic="%TOPIC%"
+   context="todo"
+   header="| *#* | *Text* | *Author* | *Changed* |$n"
+   format="| $index | $displayValue(text) | $displayValue(author) | $displayValue(date) |"
+}%
+</verbatim>
+
+Using =%RENDERMETADATA= of [[https://foswiki.org/Extensions/MetaDataPlugin][MetaDataPlugin]].
+Note that todo items are rendered based on their [[TodoListForm]] definition.
+
+<verbatim>
+%RENDERMETADATA{"todo"}%
+</verbatim>
+
+---++ Installation Instructions
+%$INSTALL_INSTRUCTIONS%
+
+---++ Dependencies
+%$DEPENDENCIES%
+
+---++ Change History
+
+%TABLE{columnwidths="7em" tablewidth="100%"}%
+|  31 Jan 2025 | initial release |
+
+%META:FORM{name="PackageForm"}%
+%META:FIELD{name="Author" title="Author" value="Michael Daum"}%
+%META:FIELD{name="Version" title="Version" value="%25$VERSION%25"}%
+%META:FIELD{name="Release" title="Release" value="%25$RELEASE%25"}%
+%META:FIELD{name="Description" title="Description" value="%25$SHORTDESCRIPTION%25"}%
+%META:FIELD{name="Repository" title="Repository" value="https://github.com/foswiki/%25$ROOTMODULE%25"}%
+%META:FIELD{name="Copyright" title="Copyright" value="2024-2025, Michael Daum, All Rights Reserved"}%
+%META:FIELD{name="License" title="License" value="GPL ([[http://www.gnu.org/copyleft/gpl.html][GNU General Public License]])"}%
+%META:FIELD{name="Home" title="Home" value="http://foswiki.org/Extensions/%25$ROOTMODULE%25"}%
+%META:FIELD{name="Support" title="Support" value="http://foswiki.org/Support/%25$ROOTMODULE%25"}%

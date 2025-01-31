@@ -1,0 +1,12 @@
+/TodoListPlugin.md5
+/TodoListPlugin.sha1
+/TodoListPlugin.tgz
+/TodoListPlugin.txt
+/TodoListPlugin.zip
+/TodoListPlugin_installer
+/TodoListPlugin_installer.pl
+
+pub/**/*gz
+pub/**/*,v
+pub/**/build
+data/**/*,v
