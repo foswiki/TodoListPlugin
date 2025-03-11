@@ -1,5 +1,5 @@
 FOSWIKI_ROOT?=~/foswiki/core
-TARGET=build/pkg.css build/pkg.js
+TARGET=build build/pkg.css build/pkg.js
 
 -include $(FOSWIKI_ROOT)/pub/System/JQueryPlugin/Makefile.include
 
@@ -14,4 +14,7 @@ build/pkg.css: src/todolist.css
 	@$(CSSMIN) $^ $(CSSMIN_ARGS)> $@
 
 clean:
-	rm -rf build/*
+	rm -f build/*
+
+build:
+	@mkdir build

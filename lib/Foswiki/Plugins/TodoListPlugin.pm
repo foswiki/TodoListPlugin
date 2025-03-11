@@ -30,7 +30,7 @@ use Foswiki::Func ();
 use Foswiki::Contrib::JsonRpcContrib ();
 use Foswiki::Plugins::JQueryPlugin ();
 
-our $VERSION = '1.00';
+our $VERSION = '1.10';
 our $RELEASE = '%$RELEASE%';
 our $SHORTDESCRIPTION = 'simple todo lists';
 our $LICENSECODE = '%$LICENSECODE%';

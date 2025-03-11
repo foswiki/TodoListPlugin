@@ -1,7 +1,7 @@
 /*
- * TodoItem 0.11
+ * TodoItem 0.20
  *
- * (c)opyright 2024 Michael Daum http://michaeldaumconsulting.com
+ * (c)opyright 2024-2025 Michael Daum http://michaeldaumconsulting.com
  *
  * Licensed under the GPL license http://www.gnu.org/licenses/gpl.html
  *
@@ -173,20 +173,18 @@
   TodoItem.prototype.navigate = function(direction) {
     var self = this,
       pos = self.elem.index() + direction,
-      otherElem;
+      otherElem, todoItem;
 
     if (pos < 0) return;
 
     otherElem = self.elem.parent().children(".todoItem").eq(pos);
 
-    if (!otherElem.length) return;
-
-    self.saveOrRemove().done(function() {
-      var todoItem = otherElem.data("todoItem");
+    if (otherElem.length) {
+      todoItem = otherElem.data("todoItem");
       if (todoItem) {
         todoItem.displayEditor();
       }
-    });
+    }
   };
 
   /***************************************************************************
@@ -248,7 +246,7 @@
    */
   TodoItem.prototype.saveOrRemove = function() {
     var self = this,
-        val = self.input.val().trim();
+        val = String(self.input.val()).trim();
 
     if (val === '') {
       return self.remove();
@@ -304,7 +302,7 @@
 
 
     if (typeof(self.input) !== 'undefined' 
-        && self.opts.text === self.input.val().trim()
+        && self.opts.text === String(self.input.val()).trim()
         && self.elem.data("value") === self.opts.value
       ) {
       self.displayView();
@@ -319,15 +317,14 @@
       value: self.opts.value
     };
 
-
     if (foswiki.eventClient) {
       data.clientId = foswiki.eventClient.id;
     }
 
     if (typeof(self.input) === 'undefined') {
-      data.text = self.opts.text.trim();
+      data.text = String(self.opts.text).trim();
     } else {
-      data.text = self.input.val().trim();
+      data.text = String(self.input.val()).trim();
     }
 
     self.elem.block({message: null});

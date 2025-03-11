@@ -1,4 +1,4 @@
-%META:TOPICINFO{author="micha" comment="reprev" date="1710835924" format="1.1" reprev="1" version="2"}%
+%META:TOPICINFO{author="ProjectContributor" comment="" date="1741714920" format="1.1"  version="1"}%
 ---+!! %TOPIC%
 %FORMFIELD{"Description"}%
 
@@ -120,6 +120,7 @@ Note that todo items are rendered based on their [[TodoListForm]] definition.
 ---++ Change History
 
 %TABLE{columnwidths="7em" tablewidth="100%"}%
+|  11 Mar 2025 | improved interaction with store backend |
 |  31 Jan 2025 | initial release |
 
 %META:FORM{name="PackageForm"}%

@@ -422,7 +422,8 @@ sub jsonRpcSaveTodo {
 
     _writeDebug("... updating item $item->{name}, index=$item->{index}");
   } else {
-    return unless $text;
+    throw Error::Simple("cannot save empty todo")
+      unless defined $text && $text ne "";
 
     $pos = @list ? $list[-1]{index} +1 : 0;
 

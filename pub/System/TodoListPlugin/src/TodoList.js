@@ -1,7 +1,7 @@
 /*
- * TodoListPlugin 0.11
+ * TodoListPlugin 0.20
  *
- * (c)opyright 2024 Michael Daum http://michaeldaumconsulting.com
+ * (c)opyright 2024-2025 Michael Daum http://michaeldaumconsulting.com
  *
  * Licensed under the GPL license http://www.gnu.org/licenses/gpl.html
  *
@@ -92,15 +92,12 @@
         var val = self.input.val(), item;
 
         if (ev.key === "Enter" && val !== "") {
+          self.input.val("").focus();
           item = self.createTodoItem(undefined, {
             text: val
           });
-          self.elem.block({message:null});
-          item.save().done(function(response) {
-            item.elem.insertBefore(self.input.parent());
-            self.elem.unblock();
-            self.input.val("").focus();
-          });
+          item.elem.insertBefore(self.input.parent());
+          item.save();
           return false;
         }
       });
