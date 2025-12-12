@@ -1,5 +1,5 @@
 /*
- * TodoListPlugin 0.20
+ * TodoListPlugin 0.40
  *
  * (c)opyright 2024-2025 Michael Daum http://michaeldaumconsulting.com
  *
@@ -57,27 +57,6 @@
     self.elem.on("reload",function() {
       self.reload();
     });
-
-    if (foswiki.eventClient) {
-      foswiki.eventClient.bind("saveList", function(message) {
-        if (message.clientId !== foswiki.eventClient.id && message.data.list === self.opts.list) {
-          self.log("saveList event for",self.opts.list);
-          self.reload();
-        }
-      });
-      foswiki.eventClient.bind("saveTodo", function(message) {
-        if (message.clientId !== foswiki.eventClient.id && message.data.list === self.opts.list) {
-          self.log("saveTodo event for",self.opts.list);
-          self.reload();
-        }
-      });
-      foswiki.eventClient.bind("deleteTodo", function(message) {
-        if (message.clientId !== foswiki.eventClient.id && message.data.list === self.opts.list) {
-          self.log("deleteTodo event for",self.opts.list);
-          self.reload();
-        }
-      });
-    }
 
     self.list.children(".todoItem").each(function() {
       self.createTodoItem(this);
@@ -146,6 +125,44 @@
         }
       });
     }
+    self.initEvents();
+  };
+
+  // attaching to websocket events **************************************
+  TodoList.prototype.initEvents = function () {
+    var self = this;
+
+    if (self._initedEvents) {
+      return;
+    }
+
+    if (!foswiki.eventClient) {
+      $(document).one("eventClient", function() {
+        self.initEvents();
+      });
+      return;
+    }
+
+    self._initedEvents = true;
+    foswiki.eventClient.bind("saveList", function(message) {
+      if (message.clientId !== foswiki.eventClient.id && message.data.list === self.opts.list) {
+        self.log("saveList event for",self.opts.list);
+        self.reload();
+      }
+    });
+    foswiki.eventClient.bind("saveTodo", function(message) {
+      if (message.clientId !== foswiki.eventClient.id && message.data.list === self.opts.list) {
+        self.log("saveTodo event for",self.opts.list);
+        self.reload();
+      }
+    });
+    foswiki.eventClient.bind("deleteTodo", function(message) {
+      if (message.clientId !== foswiki.eventClient.id && message.data.list === self.opts.list) {
+        self.log("deleteTodo event for",self.opts.list);
+        self.reload();
+      }
+    });
+
   };
 
   /***************************************************************************
@@ -228,6 +245,14 @@
    * reload a list, mostly triggered by an event handler
    */
   TodoList.prototype.reload = function() {
+    var self = this;
+
+    foswiki.debounce(function() {
+      self.reload()
+    }, "TodoList_reload", 500)();
+  };
+
+  TodoList.prototype._reload = function() {
     var self = this;
 
     self.log("reloading list",self.opts.list);

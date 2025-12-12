@@ -1,5 +1,5 @@
 /*
- * TodoItem 0.20
+ * TodoItem 0.40
  *
  * (c)opyright 2024-2025 Michael Daum http://michaeldaumconsulting.com
  *
@@ -37,6 +37,7 @@
     if (self.opts.editmode === "on") {
       self.elem.on("dblclick", function() {
         self.displayEditor();
+        return false;
       });
     }
 
@@ -57,6 +58,7 @@
         self.elem.addClass("value_"+newVal);
         self.set("value", newVal);
         self.save();
+        return false;
       });
     }
   }

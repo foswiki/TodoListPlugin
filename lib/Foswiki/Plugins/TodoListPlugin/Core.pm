@@ -143,7 +143,7 @@ sub TODOLIST {
 
     my $class = "todoItem value_".(int($item->{value} // 0));
 
-    my $line = "<li class='$class'"
+    my $line = "<li class='$class' "
       . join(" ", @itemHtml5) . ">"
       . $iconFormat
       . "<span>$text</span>"
@@ -181,7 +181,7 @@ sub encodeHtml5 {
     $val = Foswiki::entityEncode($val, "\n");
   }
 
-  return "data-$key='$val'";
+  return "data-$key='<literal>$val</literal>'";
 }
 
 =begin TML
@@ -652,7 +652,25 @@ converts an inline bullet list into a todo list stored in meta data
 sub beforeSaveHandler {
   my ($this, $web, $topic, $meta) = @_;
 
+  # process wiki text
   my $text = $meta->text();
+  if ($text) {
+    $text = $this->processTodoListSection($text, $meta);
+    $meta->text($text);
+  }
+
+  # process more meta data
+  foreach my $comment ($meta->find("COMMENT")) {
+    my $text = $comment->{text};
+    next unless $text;
+    $comment->{text} = $this->processTodoListSection($text, $meta);
+  }
+}
+
+sub processTodoListSection {
+  my ($this, $text, $meta) = @_;
+
+  return $text unless $text =~ /%STARTTODOLIST%/;
 
   my $removed = {};
   $text = _takeOutBlocks($text, 'verbatim', $removed);
@@ -661,7 +679,7 @@ sub beforeSaveHandler {
 
   _putBackBlocks(\$text, 'verbatim', $removed);
 
-  $meta->text($text);
+  return $text;
 }
 
 =begin TML
