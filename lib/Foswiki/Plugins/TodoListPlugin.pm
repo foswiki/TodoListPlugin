@@ -86,6 +86,15 @@ sub initPlugin {
     }
   );
 
+  Foswiki::Contrib::JsonRpcContrib::registerMethod(
+    "TodoListPlugin",
+    "deleteTodos",
+    sub {
+      my $session = shift;
+      return getCore($session)->jsonRpcDeleteTodos(@_);
+    }
+  );
+
   if ($Foswiki::Plugins::VERSION > 2.0) {
     my $metaDataName = $Foswiki::cfg{TodoListPlugin}{MetaData} || 'TODO';
     Foswiki::Func::registerMETA($metaDataName, 

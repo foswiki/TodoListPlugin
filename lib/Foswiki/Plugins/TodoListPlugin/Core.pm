@@ -510,7 +510,7 @@ sub getNewId {
 
 =begin TML
 
----++ ObjectMethod jsonRpcDeleteTodo($request) -> $resukt
+---++ ObjectMethod jsonRpcDeleteTodo($request) -> $result
 
 handles the deleteTodo json-rpc handler
 
@@ -535,20 +535,74 @@ sub jsonRpcDeleteTodo {
   my $listName = $request->param("list") || "default";
   my $clientId = $request->param("clientId");
 
-  $meta->remove($this->{metaDataName}, $name);
-  $meta->save();
+  if ($this->getTodoItem($meta, $name)) {
+    $meta->remove($this->{metaDataName}, $name);
+    $meta->save();
+    _publish("$web.$topic", {
+      type => "deleteTodo",
+      clientId => $clientId,
+      data => {
+        web => $web,
+        topic => $topic,
+        list => $listName    
+      }
+    });
+    return 1;
+  } 
 
-  _publish("$web.$topic", {
-    type => "deleteTodo",
-    clientId => $clientId,
-    data => {
-      web => $web,
-      topic => $topic,
-      list => $listName    
+  return 0;
+}
+
+=begin TML
+
+---++ ObjectMethod jsonRpcDeleteTodos($request) -> $result
+
+handles the deleteTodos json-rpc handler
+
+=cut
+
+sub jsonRpcDeleteTodos {
+  my ($this, $request) = @_;
+
+  my $web //= $this->{session}{webName};
+  my $topic //= $this->{session}{topicName};
+  my $wikiName = Foswiki::Func::getWikiName();
+
+  throw Foswiki::Contrib::JsonRpcContrib::Error(404, "Topic does not exist") 
+    unless Foswiki::Func::topicExists($web, $topic);
+
+  my ($meta) = Foswiki::Func::readTopic($web, $topic);
+
+  throw Foswiki::Contrib::JsonRpcContrib::Error(401, "Access denied")
+    unless Foswiki::Func::checkAccessPermission("CHANGE", $wikiName, undef, $topic, $web, $meta);
+
+  my @names = split(/\s*,\s*/, $request->param("names") || '');
+  my $listName = $request->param("list") || "default";
+  my $clientId = $request->param("clientId");
+
+  my $count = 0;
+  foreach my $name (@names) {
+    if ($this->getTodoItem($meta, $name)) {
+      $meta->remove($this->{metaDataName}, $name);
+      $count++;
     }
-  });
+  }
 
-  return 1;
+  if ($count) {
+    $meta->save();
+    _publish("$web.$topic", {
+      type => "deleteTodos",
+      clientId => $clientId,
+      data => {
+        web => $web,
+        topic => $topic,
+        list => $listName,
+        count => $count,
+      }
+    });
+  }
+
+  return $count;
 }
 
 =begin TML

@@ -1,5 +1,5 @@
 /*
- * TodoListPlugin 0.40
+ * TodoListPlugin 0.41
  *
  * (c)opyright 2024-2025 Michael Daum http://michaeldaumconsulting.com
  *
@@ -144,25 +144,12 @@
     }
 
     self._initedEvents = true;
-    foswiki.eventClient.bind("saveList", function(message) {
+    foswiki.eventClient.bind("saveList saveTodo deleteTodo deleteTodos", function(message) {
       if (message.clientId !== foswiki.eventClient.id && message.data.list === self.opts.list) {
-        self.log("saveList event for",self.opts.list);
+        self.log(`${message.type} event for`,self.opts.list);
         self.reload();
       }
     });
-    foswiki.eventClient.bind("saveTodo", function(message) {
-      if (message.clientId !== foswiki.eventClient.id && message.data.list === self.opts.list) {
-        self.log("saveTodo event for",self.opts.list);
-        self.reload();
-      }
-    });
-    foswiki.eventClient.bind("deleteTodo", function(message) {
-      if (message.clientId !== foswiki.eventClient.id && message.data.list === self.opts.list) {
-        self.log("deleteTodo event for",self.opts.list);
-        self.reload();
-      }
-    });
-
   };
 
   /***************************************************************************
@@ -248,7 +235,7 @@
     var self = this;
 
     foswiki.debounce(function() {
-      self.reload()
+      self._reload()
     }, "TodoList_reload", 500)();
   };
 

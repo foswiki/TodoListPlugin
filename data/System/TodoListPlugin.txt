@@ -1,4 +1,4 @@
-%META:TOPICINFO{author="ProjectContributor" comment="" date="1741714920" format="1.1"  version="1"}%
+%META:TOPICINFO{author="ProjectContributor" comment="" date="1766080442" format="1.1"  version="1"}%
 ---+!! %TOPIC%
 %FORMFIELD{"Description"}%
 
@@ -120,6 +120,7 @@ Note that todo items are rendered based on their [[TodoListForm]] definition.
 ---++ Change History
 
 %TABLE{columnwidths="7em" tablewidth="100%"}%
+|  18 Dec 2025 | fixed reload handler; improved websocket integration; extended jsonrpc api |
 |  12 Dec 2025 | protect html5 data of todo items from being rendered; process todolist sections in meta-comments |
 |  11 Mar 2025 | improved interaction with store backend |
 |  31 Jan 2025 | initial release |

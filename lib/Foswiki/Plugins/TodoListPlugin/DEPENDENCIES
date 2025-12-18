@@ -1,2 +1,3 @@
+Foswiki::Plugins::JQueryPlugin,>=11.33,perl,Required
 Foswiki::Plugins::MoreFormfieldsPlugin,>=0,perl,Required
 Foswiki::Plugins::MetaDataPlugin,>=0,perl,Optional
