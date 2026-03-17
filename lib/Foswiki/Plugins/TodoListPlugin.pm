@@ -1,6 +1,6 @@
 # Plugin for Foswiki - The Free and Open Source Wiki, https://foswiki.org/
 #
-# TodoListPlugin is Copyright (C) 2024-2025 Michael Daum http://michaeldaumconsulting.com
+# TodoListPlugin is Copyright (C) 2024-2026 Michael Daum http://michaeldaumconsulting.com
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -30,7 +30,7 @@ use Foswiki::Func ();
 use Foswiki::Contrib::JsonRpcContrib ();
 use Foswiki::Plugins::JQueryPlugin ();
 
-our $VERSION = '1.40';
+our $VERSION = '2.00';
 our $RELEASE = '%$RELEASE%';
 our $SHORTDESCRIPTION = 'simple todo lists';
 our $LICENSECODE = '%$LICENSECODE%';

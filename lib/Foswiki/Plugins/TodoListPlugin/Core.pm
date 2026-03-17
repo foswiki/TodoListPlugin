@@ -1,6 +1,6 @@
 # Plugin for Foswiki - The Free and Open Source Wiki, https://foswiki.org/
 #
-# TodoListPlugin is Copyright (C) 2024-2025 Michael Daum http://michaeldaumconsulting.com
+# TodoListPlugin is Copyright (C) 2024-2026 Michael Daum http://michaeldaumconsulting.com
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -121,8 +121,15 @@ sub TODOLIST {
   push @html5Data, $this->encodeHtml5('values', $values);
   push @html5Data, $this->encodeHtml5('size', $size);
 
+  my $header = $params->{header};
+  my $footer = $params->{footer};
+
   my @result = ();
-  push @result, '<div class="todoList" '.join(" ", @html5Data).'"><ul>';
+  push @result, '<div class="todoList" '.join(" ", @html5Data).'">';
+  push @result, $header if defined $header;
+  push @result, '<ul>';
+  push @result, '<li class="todoItem todoEmptyItem"></li>';
+
   my @list = $this->getTodoList($meta, $listName);
 
   my $iconFormat = 
@@ -158,10 +165,15 @@ sub TODOLIST {
       . "<input type='text' name='text' size='$size' class='todoListInput foswikiHideOnPrint' placeholder='%MAKETEXT{\"add a todo\"}%'/>"
       . '</li>';
   }
+  push @result, $footer if defined $footer;
   push @result, '</ul>';
   push @result, '</div>';
 
-  return join("\n", @result);
+  my $result = join("\n", @result);
+  my $count = '<span class="todoListCounter">'.scalar(@list).'</span>';
+  $result =~ s/\$count\b/$count/g;
+
+  return $result;
 }
 
 =begin TML
@@ -251,6 +263,22 @@ sub getTodoList {
   return @list;
 }
 
+sub getRenderedTodoList {
+  my ($this, $meta, $listName) = @_;
+
+  my @list = $this->getTodoList($meta, $listName);
+  foreach my $item (@list) {
+    my $text = $item->{text};
+    $text = $meta->expandMacros($text) if $text =~ /%/;
+    $text = $meta->renderTML($text);
+    $text =~ s/^\s+//;
+    $text =~ s/\s+$//;
+    $item->{_rendered} = $text;
+  }
+
+  return @list;
+}
+
 =begin TML
 
 ---++ ObjectMethod getTodoItem($meta, $name) -> $item
@@ -289,15 +317,7 @@ sub jsonRpcReadList {
   throw Foswiki::Contrib::JsonRpcContrib::Error(401, "Access denied")
     unless Foswiki::Func::checkAccessPermission("VIEW", $wikiName, undef, $topic, $web, $meta);
 
-  my @list = $this->getTodoList($meta, $listName);
-  foreach my $item (@list) {
-    my $text = $item->{text};
-    $text = $meta->expandMacros($text) if $text =~ /%/;
-    $text = $meta->renderTML($text);
-    $text =~ s/^\s+//;
-    $text =~ s/\s+$//;
-    $item->{_rendered} = $text;
-  }
+  my @list = $this->getRenderedTodoList($meta, $listName);
   return \@list;
 }
 
@@ -360,7 +380,8 @@ sub jsonRpcSaveList {
     }
   });
 
-  return "ok";
+  my @list = $this->getRenderedTodoList($meta, $listName);
+  return \@list;
 }
 
 =begin TML
@@ -405,7 +426,7 @@ sub jsonRpcSaveTodo {
     $item->{author} = Foswiki::Func::getCanonicalUserID();
 
     if (defined $pos) {
-      if ($pos < 0) {
+      if ($pos < 0 || $pos >= scalar(@list)) {
         $pos = @list ? $list[-1]{index} +1 : 0;
       }
 
@@ -416,7 +437,8 @@ sub jsonRpcSaveTodo {
           $item->{index} = $pos;
           $newIndex++;
         }
-        $otherItem->{index} = $newIndex++;
+        $otherItem->{index} = $newIndex;
+        $newIndex++;
       }
     }
 
@@ -747,6 +769,8 @@ sub convertTodoList {
 
   my $listName = "id". (time() + int(rand(10000)));
   my $index = 0;
+
+  $text = Foswiki::Func::expandCommonVariables($text, $meta->topic, $meta->web, $meta) if $text =~ /%/;
 
   foreach my $line (split(/\n/, $text)) {
     if ($line =~ /^   \*\s+(.*?)\s*$/) {

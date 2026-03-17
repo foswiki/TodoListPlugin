@@ -1,7 +1,7 @@
 /*
- * TodoItem 0.40
+ * TodoItem 0.41
  *
- * (c)opyright 2024-2025 Michael Daum http://michaeldaumconsulting.com
+ * (c)opyright 2024-2026 Michael Daum http://michaeldaumconsulting.com
  *
  * Licensed under the GPL license http://www.gnu.org/licenses/gpl.html
  *
@@ -181,6 +181,7 @@
 
     otherElem = self.elem.parent().children(".todoItem").eq(pos);
 
+
     if (otherElem.length) {
       todoItem = otherElem.data("todoItem");
       if (todoItem) {
@@ -281,7 +282,9 @@
     }).always(function() {
       self.elem.unblock();
     }).done(function() {
+      var todoList = self.getTodoList();
       self.elem.remove();
+      todoList.updateCounter();
     }).fail(function(xhr) {
       var response = xhr.responseJSON;
       $.pnotify({
@@ -315,7 +318,7 @@
       topic: self.opts.topic,
       list: self.opts.list,
       name: self.opts.name,
-      pos: self.elem.index(),
+      pos: self.elem.index()-1,
       value: self.opts.value
     };
 
@@ -350,6 +353,7 @@
       } else {
         self.view.html(result._rendered)
       }
+      self.getTodoList().updateCounter();
       self.displayView();
     }).fail(function(xhr) {
       var response = xhr.responseJSON;

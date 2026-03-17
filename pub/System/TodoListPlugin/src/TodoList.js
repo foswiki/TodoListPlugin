@@ -1,7 +1,7 @@
 /*
  * TodoListPlugin 0.41
  *
- * (c)opyright 2024-2025 Michael Daum http://michaeldaumconsulting.com
+ * (c)opyright 2024-2026 Michael Daum http://michaeldaumconsulting.com
  *
  * Licensed under the GPL license http://www.gnu.org/licenses/gpl.html
  *
@@ -58,7 +58,7 @@
       self.reload();
     });
 
-    self.list.children(".todoItem").each(function() {
+    self.list.children(".todoItem:not(.todoEmptyItem)").each(function() {
       self.createTodoItem(this);
     });
 
@@ -89,7 +89,8 @@
         //axis: "y",
         distance: 5,
         tolerance: "pointer",
-        placeholder: "ui-sortable-placeholder todolistPlaceholder",
+        placeholder: "ui-sortable-placeholder todoListPlaceholder",
+        //forceHelperSize: true,
         forcePlaceholderSize: true,
         cursor: "move",
 
@@ -104,28 +105,35 @@
             afterCountItems = self.length();
 
           self.log("got an update in " + self.opts.list,"countItems=",afterCountItems);
+          self.log("item data=",item);
 
           if (self._beforeCountItems > afterCountItems) {
             self.log("detected a remove ... ignoring");
+            self.updateCounter();
             return;
           }
 
-          self.log("item list=",item.opts.list,"self list=",self.opts.list);
+          self.log("item from list=",item.opts.list,"to list=",self.opts.list);
 
           if (item.opts.list === self.opts.list) {
-            self.save().always(function() {
-              self.reload();
-            });
+            self.save();
           } else {
             item.set("list", self.opts.list)
             item.save().always(function() {
-              self.reload();
+              //self.reload();
             });
           }
         }
       });
     }
     self.initEvents();
+  };
+
+  // update counter element *********************************************
+  TodoList.prototype.updateCounter = function() {
+    var self = this;
+
+    self.elem.find(".todoListCounter").text(self.length());
   };
 
   // attaching to websocket events **************************************
@@ -178,7 +186,7 @@
   TodoList.prototype.length = function() {
     var self = this;
 
-    return self.list.children(".todoItem:not(.ui-sortable-placeholder)").length;
+    return self.list.children(".todoItem:not(.ui-sortable-placeholder):not(.todoEmptyItem)").length;
   };
 
   /***************************************************************************
@@ -189,11 +197,11 @@
 
     if (self.opts.editmode !== "on") return $.Deferred().reject("not editable");
 
-    self.list.children(".todoItem").each(function() {
+    self.list.children(".todoItem:not(.todoEmptyItem)").each(function() {
       var elem = $(this);
 
       sorting.push({
-        pos: elem.index(),
+        pos: elem.index()-1,
         name: elem.data("name"),
       });
     });
@@ -218,6 +226,8 @@
       params: data
     }).always(function() {
       self.elem.unblock();
+    }).done(function(response) {
+      self.render(response.result);
     }).fail(function(xhr) {
       var response = xhr.responseJSON;
       $.pnotify({
@@ -252,17 +262,7 @@
         list: self.opts.list
       }
     }).done(function(response) {
-      var inputContainer = self.input.parent();
-      self.list.children(".todoItem").remove();
-      response.result.forEach(function(data) {
-        var item;
-
-        data.topic = self.opts.topic;
-        data.list = self.opts.list;
-
-        item = self.createTodoItem(undefined, data)
-        item.elem.insertBefore(inputContainer);
-      });
+      self.render(response.result);
     }).fail(function(xhr) {
       var response = xhr.responseJSON;
       $.pnotify({
@@ -271,6 +271,24 @@
         text: response.error.message
       });
     });
+  };
+
+  TodoList.prototype.render = function(data) {
+    var self = this;
+
+    var inputContainer = self.input.parent();
+    self.list.children(".todoItem:not(.todoEmptyItem)").remove();
+    data.forEach(function(data) {
+      var item;
+
+      data.topic = self.opts.topic;
+      data.list = self.opts.list;
+
+      item = self.createTodoItem(undefined, data)
+      item.elem.insertBefore(inputContainer);
+    });
+
+    self.updateCounter();
   };
 
   /***************************************************************************

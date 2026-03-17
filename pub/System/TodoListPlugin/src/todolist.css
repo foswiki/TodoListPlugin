@@ -42,3 +42,11 @@
 .todoList li.value_2 .icon3 {
   display:inline-block;
 }
+.todoListPlaceholder {
+  border:1px dashed var(--color-border);
+  border-radius:0.25rem;
+  margin:0 0 5px;
+}
+.todoList .todoAddItem {
+  margin-bottom:1rem;
+}

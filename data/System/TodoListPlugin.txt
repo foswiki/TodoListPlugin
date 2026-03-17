@@ -1,4 +1,4 @@
-%META:TOPICINFO{author="ProjectContributor" comment="" date="1766080442" format="1.1"  version="1"}%
+%META:TOPICINFO{author="ProjectContributor" comment="" date="1773765118" format="1.1" version="1"}%
 ---+!! %TOPIC%
 %FORMFIELD{"Description"}%
 
@@ -29,6 +29,10 @@ This plugin implements a simple todo list editor stored in Foswiki meta data.
 | icon2="..." | icon for ticked off items | fa-check |
 | icon3="..." | icon displayed for the third value if ternary is enabled | fa-times |
 | size="..." | size of the input element to edit a todo item | 80 |
+| header="..." | string to be prepended to the todo list | |
+| footer="..." | string to be appended to the todo list | |
+
+Note that the =header= and =footer= parameter may contain the =$count= variable to display the current number of items in the list.
 
 If =editmode= is set to =acl= then the following access control lists will control the edit mode.
 
@@ -120,6 +124,8 @@ Note that todo items are rendered based on their [[TodoListForm]] definition.
 ---++ Change History
 
 %TABLE{columnwidths="7em" tablewidth="100%"}%
+|  17 Mar 2026 | expand variables before converting the content between STARTTODOLIST and ENDTODOLIST |
+|  27 Feb 2026 | fixed inserting an element at the end of a list with drag+drop; added =header=, =footer= and =$counter= |
 |  18 Dec 2025 | fixed reload handler; improved websocket integration; extended jsonrpc api |
 |  12 Dec 2025 | protect html5 data of todo items from being rendered; process todolist sections in meta-comments |
 |  11 Mar 2025 | improved interaction with store backend |
