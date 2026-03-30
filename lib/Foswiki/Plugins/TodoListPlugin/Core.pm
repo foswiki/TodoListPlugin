@@ -85,7 +85,7 @@ sub TODOLIST {
 
   my $request = Foswiki::Func::getRequestObject();
   my $rev = $params->{rev} // $request->param("rev");
-  my ($meta) = Foswiki::Func::readTopic($web, $topic, $rev);
+  my ($meta) = Foswiki::Func::readTopic($theWeb, $theTopic, $rev);
 
   my $wikiName = Foswiki::Func::getWikiName();
   return inlineError("access denied")
@@ -113,7 +113,7 @@ sub TODOLIST {
 
   my @html5Data = ();
   push @html5Data, $this->encodeHtml5('editmode', $editMode);
-  push @html5Data, $this->encodeHtml5('topic', "$web.$topic");
+  push @html5Data, $this->encodeHtml5('topic', "$theWeb.$theTopic");
   push @html5Data, $this->encodeHtml5('list', $listName);
   push @html5Data, $this->encodeHtml5('icon1', $icon1);
   push @html5Data, $this->encodeHtml5('icon2', $icon2);
