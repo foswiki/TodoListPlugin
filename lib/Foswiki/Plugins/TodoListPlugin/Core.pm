@@ -81,14 +81,14 @@ sub TODOLIST {
   my ($this, $session, $params, $topic, $web) = @_;
 
   my ($theWeb, $theTopic) = Foswiki::Func::normalizeWebTopicName($web, $params->{topic} || $topic);
-  return inlineError("topic not found") unless Foswiki::Func::topicExists($theWeb, $theTopic);
+  return _inlineError("topic not found") unless Foswiki::Func::topicExists($theWeb, $theTopic);
 
   my $request = Foswiki::Func::getRequestObject();
   my $rev = $params->{rev} // $request->param("rev");
   my ($meta) = Foswiki::Func::readTopic($theWeb, $theTopic, $rev);
 
   my $wikiName = Foswiki::Func::getWikiName();
-  return inlineError("access denied")
+  return _inlineError("access denied")
     unless Foswiki::Func::checkAccessPermission('VIEW', $wikiName, undef, $theTopic, $theWeb, $meta);
 
   Foswiki::Plugins::JQueryPlugin::createPlugin('TodoList');

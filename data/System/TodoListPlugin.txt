@@ -1,4 +1,4 @@
-%META:TOPICINFO{author="ProjectContributor" comment="" date="1774879236" format="1.1" version="1"}%
+%META:TOPICINFO{author="ProjectContributor" comment="" date="1775035475" format="1.1" version="1"}%
 ---+!! %TOPIC%
 %FORMFIELD{"Description"}%
 
@@ -124,6 +124,7 @@ Note that todo items are rendered based on their [[TodoListForm]] definition.
 ---++ Change History
 
 %TABLE{columnwidths="7em" tablewidth="100%"}%
+|  01 Apr 2026 | fixed internal error |
 |  30 Mar 2026 | fixed topic parameter reading todos from another topic |
 |  17 Mar 2026 | expand variables before converting the content between STARTTODOLIST and ENDTODOLIST |
 |  27 Feb 2026 | fixed inserting an element at the end of a list with drag+drop; added =header=, =footer= and =$counter= |
